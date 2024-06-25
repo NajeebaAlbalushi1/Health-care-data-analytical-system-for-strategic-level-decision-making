@@ -1,0 +1,3191 @@
+
+1.About Us:
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>About Us-Healthcare data analytics system</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="icon" type="image/x-icon" href="healthcare.png">
+<style>
+body,h1 {font-family: "Raleway", sans-serif}
+body, html {height: 100%}
+.bgimg {
+  background-color: #D17117;
+  min-height: 100%;
+  background-position: center;
+  background-size: cover;
+}
+</style>
+</head>
+<body>
+
+<div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
+  <div class="w3-display-topleft w3-padding-large w3-xlarge">
+  <a href="homePage.php"> HCDA system</a>
+  </div>
+  <div class="w3-display-middle">
+    <h1 class="w3-jumbo w3-animate-top">ABOUT THIS SITE!!</h1>
+    <hr class="w3-border-grey" style="margin:auto;width:40%">
+    <p class="w3-large w3-center">A healthcare data analytics system for strategic level decision making booking, Patient diagnosis, Prescription & Surgery. </p>
+  </div>
+  <div class="w3-display-bottomleft w3-padding-large">
+    Powered by <a href="#" target="_blank">Healthcare data analytics system</a>
+  </div>
+</div>
+
+</body>
+</html>
+
+2.adminConnector.php
+
+<?php
+session_start();
+
+// initializing variables
+
+$username    = "";
+$pass    = "";
+$errors = array();
+
+// connect to the database
+$con = mysqli_connect('localhost', 'root', '','healthCareSystem');
+// LOGIN USER
+if (isset($_POST['login'])) {
+     
+  $username = mysqli_real_escape_string($con, $_POST['username']);
+  $pass = mysqli_real_escape_string($con, $_POST['pass']);
+
+
+  if (count($errors) == 0) {
+   	$check = "SELECT * FROM `tb_adminlogin` WHERE username = '$username' AND pass = '$pass'";
+  	$res = mysqli_query($con, $check);
+  	if (mysqli_num_rows($res) == 1) {
+  	  $_SESSION['username'] = $username;
+  	   header('location:adminHomepage.php');
+         exit();
+  	}else {
+        $errors['username'] = "Wrong username/password !";
+  	}
+  }
+}
+
+?>
+
+3.adminHomepage.php
+
+<?php require_once "doctorConnector.php"; ?>
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Home Page-Healthcare data analytics system</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<link rel="icon" type="image/x-icon" href="healthcare.png">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+ 
+    
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+    body{
+  background: #ddd;
+    font-family: 'Poppins', 'sans-serif';
+}
+printBtn.setAttribute('disabled', 'disabled');
+.panel-default {
+padding-top: 12px;
+padding-bottom: 12px;
+padding-right: 25%;
+padding-left: 25%;
+
+}
+
+.height10{
+  height:10px;
+}
+.mtop10{
+  margin-top:10px;
+}
+.modal-label{
+  position:relative;
+  top:7px
+}
+.myInput{
+  box-sizing: content-box;
+box-shadow: 3px 3px 1.5px white;
+border: 2px solid black;
+border-radius:15%;
+}
+
+
+.button-18 {
+  align-items: center;
+  background-color: #16437E;
+  border: 0;
+  border-radius: 100px;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  justify-content: center;
+  line-height: 20px;
+  max-width: 240px;
+  min-height: 40px;
+  min-width: 0px;
+  overflow: hidden;
+  padding: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+  touch-action: manipulation;
+  transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+}
+
+.button-18:hover,
+.button-18:focus { 
+  background-color: #16437E;
+  color: #ffffff;
+}
+
+.button-18:active {
+  background: #09223b;
+  color: rgb(255, 255, 255, .7);
+}
+
+.button-18:disabled { 
+  cursor: not-allowed;
+  background: rgba(0, 0, 0, .08);
+  color: rgba(0, 0, 0, .3);
+}
+#toggle{
+position:absolute;
+top:77.5%;
+right:18%;
+transform:translateY(-50%);
+width:18px;
+height:18px;
+background:url(show.png);
+background-size:cover;
+cursor: pointer;
+}
+#toggle.hide {
+
+background:url(hidden.png);
+background-size:cover;
+}
+#toggle1{
+position:absolute;
+top:83%;
+right:18%;
+transform:translateY(-50%);
+width:18px;
+height:18px;
+background:url(show.png);
+background-size:cover;
+cursor: pointer;
+}
+#toggle1.hide {
+
+background:url(hidden.png);
+background-size:cover;
+}
+
+.button-2 {
+  background-color: rgba(51, 51, 51, 0.05);
+  border-radius: 20px;
+  border-width: 0;
+  color: #333333;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 10px 12px;
+  text-align: center;
+  transition: all 200ms;
+  vertical-align: baseline;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+  </style>
+</head>
+<body>
+  <!-- Navbar (sit on top) -->
+<div class="w3-top">
+  <div class="w3-bar w3-white w3-wide w3-padding w3-card">
+    <a href="#home" class="w3-bar-item w3-button"><b>HCDAs </b> Healthcare data analytics system</a>
+    <!-- Float links to the right. Hide them on small screens -->
+    <div class="w3-right w3-hide-small">
+    <a href="employee_new.php" class="w3-bar-item w3-button">ADDING AN EMPLOYEE</a>
+      <a href="aboutUs.php" class="w3-bar-item w3-button">ABOUT US </a>
+      <a href="homePage.php" class="w3-bar-item w3-button">HOME</a> </div>
+  </div>
+</div>
+<br>
+<!-- Header -->
+<header class="w3-display-container w3-content w3-wide" style="max-width:1500px;" id="home">
+  <img class="w3-image" src="background.jpeg" alt="background" width="1800" height="800">
+  <div class="w3-display-middle w3-margin-top w3-center">
+    <h1 class="w3-xxlarge w3-text-white"><span class="w3-padding w3-black w3-opacity-min"><b>Healthcare data analytics system</b></span> </h1>
+  </div>
+</header>
+<div class="panel panel-default">
+<br>
+   <div class="row">
+     <?php
+       if(isset($_SESSION['error'])){
+         echo
+         "
+         <div class='alert alert-danger text-center'>
+           <button class='close'>&times;</button>
+           ".$_SESSION['error']."
+         </div>
+         ";
+         unset($_SESSION['error']);
+       }
+       if(isset($_SESSION['success'])){
+         echo
+         "
+         <div class='alert alert-success text-center'>
+           <button class='close'>&times;</button>
+           ".$_SESSION['success']."
+         </div>
+         ";
+         unset($_SESSION['success']);
+       }
+     ?>
+
+</div>
+
+     <br><br><br>
+
+<!-- table to shows employee personal inf-->
+
+<center><span style="background-color: white; font-size: 30px;">EMPLOYEE PERSONAL INFORMATION:</center></span>
+
+<table style="width:100%" class="table table-hover" id="myTable">
+    <thead>
+    <tr>
+       <th> No.</th>
+       <th>FIRST NAME</th>
+       <th>LAST NAME</th>
+       <th>EMAIL</th>
+       <th>USERNAME</th>
+       <th>BD</th>
+       <th>CIVIL-ID</th>
+       <th>ADDRESS </th>
+       <th> Employee's ID Number</th>
+       <th> Job Title(shourtcut)</th>
+       <th> Brach loction</th>
+       <th> Phone number</th>
+       <th colspan="2">ACTIONS</th>
+       </tr>
+    </thead>
+    <tbody>
+    <?php 
+$sql="SELECT * FROM `tb_employeeInfo`";
+$result=mysqli_query($con,$sql);
+
+if($result){
+    while ($row=mysqli_fetch_assoc($result)){
+        $id=$row['id'];
+        $fname=$row['fname'];
+        $lname=$row['lname'];
+        $email=$row['email'];
+        $username=$row['username'];
+        $bday=$row['bday'];
+        $civilid=$row['civilid'];
+        $address=$row['address'];
+        $employeeId=$row['employeeId'];
+        $jobTitle=$row['jobTitle'];
+        $branchLocation=$row['branchLocation'];
+        $phone=$row['phone'];
+	
+echo "<tr>
+<th>".$id."</th>
+<th>".$fname."</th>
+<th>".$lname."</th>
+<th>".$email."</th>
+<th>".$username."</th>
+<th>".$bday."</th>
+<th>".$civilid."</th>
+<th>".$address."</th>
+<th>".$employeeId."</th>
+<th>".$jobTitle."</th>
+<th>".$branchLocation."</th>
+<th>".$phone."</th>
+       
+<td>
+<a href='employee_Read.php?id=". $row['id'] ."' title='View Record' data-toggle='tooltip'><span class='glyphicon glyphicon-eye-open'></span></a></a>
+<a href='employee_update.php?id=". $row['id'] ."' title='Update Record' data-toggle='tooltip'><span class='glyphicon glyphicon-pencil'></span></a>
+<a href='employee_del.php?id=". $row['id'] ."' title='Delete Record' data-toggle='tooltip'><span class='glyphicon glyphicon-trash'></span></a> </td>
+</tr>";
+     
+    }
+}
+?>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<br><br><br>
+<br><br><br>
+
+
+
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+
+
+
+   <script>
+
+$(window).load(function() {
+  $('.post-module').hover(function() {
+    $(this).find('.description').stop().animate({
+      height: "toggle",
+      opacity: "toggle"
+    }, 300);
+  });
+});
+
+//search function
+function searchFunction() {
+  // Declare variables
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+
+  // Loop through all table rows, and hide those who don't match the search query
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[0];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+}
+
+function sortTable() {
+  var table, rows, switching, i, x, y, shouldSwitch;
+  table = document.getElementById("myTable");
+  switching = true;
+  /*Make a loop that will continue until
+  no switching has been done:*/
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.rows;
+    /*Loop through all table rows (except the
+    first, which contains table headers):*/
+    for (i = 1; i < (rows.length - 1); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare,
+      one from current row and one from the next:*/
+      x = rows[i].getElementsByTagName("TD")[0];
+      y = rows[i + 1].getElementsByTagName("TD")[0];
+      //check if the two rows should switch place:
+      if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+        //if so, mark as a switch and break the loop:
+        shouldSwitch = true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch
+      and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
+}
+$(document).ready(function(){
+	//inialize datatable
+    $('#myTable').DataTable();
+
+    //hide alert
+    $(document).on('click', '.close', function(){
+    	$('.alert').hide();
+    })
+});
+</script>
+
+<!-- Footer -->
+<footer class="w3-center w3-black w3-padding-16">
+  <p>Powered by <a href="#" title="Healthcare data analytics system" target="_blank" class="w3-hover-text-green">Healthcare data analytics system</a></p>
+</footer>
+
+</body>
+</html>
+
+4.adminlogin.php
+
+<?php require_once "adminConnector.php"; ?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login Form- Healthcare data analytics system</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <link rel="icon" type="image/x-icon" href="healthcare.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+    body{
+  background: #D17117;
+    font-family: 'Poppins', 'sans-serif';
+}
+
+    ::selection{
+    color: #fff;
+    background: #D17117;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.container{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.container .form{
+    background: #fff;
+    padding: 30px 35px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#toggle{
+    position:absolute;
+    top:50%;
+    right:18%;
+    transform:translateY(-50%);
+    width:20px;
+    height:20px;
+    border-radius: 5px;
+    background:url(show.png);
+    background-size:cover;
+    cursor: pointer;
+}
+#toggle.hide {
+
+    background:url(hidden.png);
+    background-size:cover;
+}
+
+    </style>
+
+
+</head>
+
+<body>
+<div class="container">
+        <div class="row">
+            <div class="col-md-4 offset-md-4 form login-form">          
+                <form action="adminLogin.php" method="POST" autocomplete="" class="was-validated" >
+               
+                    <h2 class="text-center"> Admin Log In</h2>
+                    <p class="text-center">Please Login with your username and password</p>
+                    <?php include('errors.php'); ?>
+                    <div class="form-group">
+                    Username:
+                    <div class="input-group">
+                    <div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text">@</span>
+  </div>
+                        <input class="form-control" type="text"  id="username" name="username" required>
+                        <div class="invalid-feedback">Please enter username.</div>
+                    <div class="valid-feedback">Great!</div>
+                </div>
+                    </div>
+                </div>
+                    <div class="form-group">
+                    Password: <input class="form-control" type="password" name="pass"  id="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required>
+                    <div class="invalid-feedback">Please enter Password.</div>
+                    <div class="valid-feedback">Great!</div>
+                    <div id="toggle" onclick="showHide();"></div>    
+                        <script type="text/javascript">
+                         const password=document.getElementById('password');
+                         const toggle=document.getElementById('toggle');
+                         function showHide(){
+                         if(password.type =='password'){
+                            password.setAttribute('type','text');
+                            toggle.classList.remove('hide')
+                         }else{
+                            password.setAttribute('type','password');
+                            toggle.classList.add('hide')  
+                         }
+                         }
+                        </script>  
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                        <input class="btn btn-primary btn-block" type="submit" name="login" value="Login">
+                    </div>
+
+                    <a href="homePage.php"> <label class="btn btn-outline-info">Back </a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="btn btn-outline-danger" type="reset" name="clear" value="Clear">
+                 
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
+
+</html>
+
+
+5.doctorConnector.php
+
+<?php
+
+// connect to the database
+$con = mysqli_connect('localhost', 'root', '','healthCareSystem');
+
+$email    = "";
+$pass    = "";
+$errors = array();
+
+//if user signup button
+if(isset($_POST['add'])){ 			
+    $fname = mysqli_real_escape_string($con, $_POST['fname']);
+    $lname = mysqli_real_escape_string($con, $_POST['lname']);
+    $email = mysqli_real_escape_string($con, $_POST['email']);
+    $username = mysqli_real_escape_string($con, $_POST['username']);
+    $pass = mysqli_real_escape_string($con, $_POST['pass']);
+    $cpassword = mysqli_real_escape_string($con, $_POST['cpassword']);
+    $bday = mysqli_real_escape_string($con, $_POST['bday']);
+    $civilid = mysqli_real_escape_string($con, $_POST['civilid']);
+    $address = mysqli_real_escape_string($con, $_POST['address']);
+    $employeeId = mysqli_real_escape_string($con, $_POST['employeeId']);
+    $jobTitle = mysqli_real_escape_string($con, $_POST['jobTitle']);
+    $branchLocation = mysqli_real_escape_string($con, $_POST['branchLocation']);
+    $phone = mysqli_real_escape_string($con, $_POST['phone']);
+    if($pass !== $cpassword){
+        $errors['pass'] = "Confirm password not matched!";
+    }
+    $email_check = "SELECT * FROM `tb_employeeInfo` WHERE email = '$email'";
+    $res = mysqli_query($con, $email_check);
+    if(mysqli_num_rows($res) > 0){
+        $errors['email'] = "Email that you have entered is already exist!";
+    }
+    
+        $insert_data = "INSERT INTO `tb_employeeInfo` ( fname, lname, email, username, pass, bday, civilid, address, employeeId, jobTitle, branchLocation, phone)
+        values( '$fname', '$lname', '$email', '$username', '$pass', '$bday', '$civilid', '$address', '$employeeId', '$jobTitle', '$branchLocation', '$phone')";     
+        $data_check = mysqli_query($con, $insert_data);
+        if($con->query($insert_data)){
+           $_SESSION['success'] = 'User added successfully';
+       }
+        
+    
+
+}
+  
+
+
+
+?>
+
+
+6.doctorHomepage.php
+
+<?php require_once "patientConnector.php"; ?>
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Doctors Home Page-Healthcare data analytics system</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<link rel="icon" type="image/x-icon" href="healthcare.png">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+ 
+    
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+    body{
+  background: #DDD;
+    font-family: 'Poppins', 'sans-serif';
+}
+printBtn.setAttribute('disabled', 'disabled');
+.panel-default {
+padding-top: 12px;
+padding-bottom: 12px;
+padding-right: 25%;
+padding-left: 25%;
+
+}
+
+.height10{
+  height:10px;
+}
+.mtop10{
+  margin-top:10px;
+}
+.modal-label{
+  position:relative;
+  top:7px
+}
+.myInput{
+  box-sizing: content-box;
+box-shadow: 3px 3px 1.5px white;
+border: 2px solid black;
+border-radius:15%;
+}
+
+
+.button-18 {
+  align-items: center;
+  background-color: #16437E;
+  border: 0;
+  border-radius: 100px;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  justify-content: center;
+  line-height: 20px;
+  max-width: 240px;
+  min-height: 40px;
+  min-width: 0px;
+  overflow: hidden;
+  padding: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+  touch-action: manipulation;
+  transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+}
+
+.button-18:hover,
+.button-18:focus { 
+  background-color: #16437E;
+  color: #ffffff;
+}
+
+.button-18:active {
+  background: #09223b;
+  color: rgb(255, 255, 255, .7);
+}
+
+.button-18:disabled { 
+  cursor: not-allowed;
+  background: rgba(0, 0, 0, .08);
+  color: rgba(0, 0, 0, .3);
+}
+#toggle{
+position:absolute;
+top:77.5%;
+right:18%;
+transform:translateY(-50%);
+width:18px;
+height:18px;
+background:url(show.png);
+background-size:cover;
+cursor: pointer;
+}
+#toggle.hide {
+
+background:url(hidden.png);
+background-size:cover;
+}
+#toggle1{
+position:absolute;
+top:83%;
+right:18%;
+transform:translateY(-50%);
+width:18px;
+height:18px;
+background:url(show.png);
+background-size:cover;
+cursor: pointer;
+}
+#toggle1.hide {
+
+background:url(hidden.png);
+background-size:cover;
+}
+
+.button-2 {
+  background-color: rgba(51, 51, 51, 0.05);
+  border-radius: 20px;
+  border-width: 0;
+  color: #333333;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 10px 12px;
+  text-align: center;
+  transition: all 200ms;
+  vertical-align: baseline;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+  </style>
+</head>
+<body>
+ <!-- Navbar (sit on top) -->
+ <div class="w3-top">
+  <div class="w3-bar w3-white w3-wide w3-padding w3-card">
+    <a href="#home" class="w3-bar-item w3-button"><b>HCDAs </b> Healthcare data analytics system</a>
+    <!-- Float links to the right. Hide them on small screens -->
+    <div class="w3-right w3-hide-small">
+    <a href="patient_new.php" class="w3-bar-item w3-button">ADDING A PATIENT</a>
+      <a href="aboutUs.php" class="w3-bar-item w3-button">ABOUT US </a>
+      <a href="homePage.php" class="w3-bar-item w3-button">HOME</a> </div>
+  </div>
+</div>
+<br>
+<!-- Header -->
+<header class="w3-display-container w3-content w3-wide" style="max-width:1500px;" id="home">
+  <img class="w3-image" src="background.jpeg" alt="background" width="1800" height="800">
+  <div class="w3-display-middle w3-margin-top w3-center">
+    <h1 class="w3-xxlarge w3-text-white"><span class="w3-padding w3-black w3-opacity-min"><b>Healthcare data analytics system</b></span> </h1>
+  </div>
+</header>
+
+<div class="panel panel-default">
+<br>
+   <div class="row">
+     <?php
+       if(isset($_SESSION['error'])){
+         echo
+         "
+         <div class='alert alert-danger text-center'>
+           <button class='close'>&times;</button>
+           ".$_SESSION['error']."
+         </div>
+         ";
+         unset($_SESSION['error']);
+       }
+       if(isset($_SESSION['success'])){
+         echo
+         "
+         <div class='alert alert-success text-center'>
+           <button class='close'>&times;</button>
+           ".$_SESSION['success']."
+         </div>
+         ";
+         unset($_SESSION['success']);
+       }
+     ?>
+
+</div>
+
+
+<!-- table to shows employee personal inf-->
+
+<center><span style="background-color: white; font-size: 30px;">PATIENT RECORDS:</center></span>
+<table style="width:100%" class="table table-hover" id="myTable">
+    <thead>
+    <tr>	
+       <th> No.</th>
+       <th> FULL NAME</th>
+       <th> AGE</th>
+       <th> BD</th>
+       <th>CIVIL-ID</th>
+       <th>ADDRESS</th>
+       <th>GENDER</th>
+       <th>PHONE </th>
+       <th>DISEASE </th>
+       <th>SYMPTOMS OF DISEASE </th>
+       <th>DATE </th>
+       <th colspan="3">ACTIONS</th>
+       </tr>
+    </thead>
+    <tbody>
+    <?php 
+$sql="SELECT * FROM `patient_information`";
+$result=mysqli_query($con,$sql);
+
+if($result){			
+			
+    while ($row=mysqli_fetch_assoc($result)){
+        $id=$row['id'];
+        $patientName=$row['patientName'];
+        $patientAge=$row['patientAge'];
+        $patientBD=$row['patientBD'];
+        $patientCivilId=$row['patientCivilId'];
+        $patientLocation=$row['patientLocation'];
+        $patientGender=$row['patientGender'];
+        $patientPhone=$row['patientPhone'];
+        $patientDisease=$row['patientDisease'];
+        $diseaseSymptoms=$row['diseaseSymptoms'];
+        $recordDate=$row['recordDate'];
+	
+echo "<tr>
+<th>".$id."</th>
+<th>".$patientName."</th>
+<th>".$patientAge."</th>
+<th>".$patientBD."</th>
+<th>".$patientCivilId."</th>
+<th>".$patientLocation."</th>
+<th>".$patientGender."</th>
+<th>".$patientPhone."</th>
+<th>".$patientDisease."</th>
+<th>".$diseaseSymptoms."</th>
+<th>".$recordDate."</th>
+<td>
+<a href='patient_Read.php?id=". $row['id'] ."' title='View Record' data-toggle='tooltip'><span class='glyphicon glyphicon-eye-open'></span></a></a>
+<a href='patient_update.php?id=". $row['id'] ."' title='Update Record' data-toggle='tooltip'><span class='glyphicon glyphicon-pencil'></span></a>
+<a href='patient_del.php?id=". $row['id'] ."' title='Delete Record' data-toggle='tooltip'><span class='glyphicon glyphicon-trash'></span></a> </td>
+</tr>";
+     
+    }
+}
+?>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+
+
+<br><br><br>
+<br><br><br>
+
+
+   <script>
+
+$(window).load(function() {
+  $('.post-module').hover(function() {
+    $(this).find('.description').stop().animate({
+      height: "toggle",
+      opacity: "toggle"
+    }, 300);
+  });
+});
+
+//search function
+function searchFunction() {
+  // Declare variables
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+
+  // Loop through all table rows, and hide those who don't match the search query
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[0];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+}
+
+function sortTable() {
+  var table, rows, switching, i, x, y, shouldSwitch;
+  table = document.getElementById("myTable");
+  switching = true;
+  /*Make a loop that will continue until
+  no switching has been done:*/
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.rows;
+    /*Loop through all table rows (except the
+    first, which contains table headers):*/
+    for (i = 1; i < (rows.length - 1); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare,
+      one from current row and one from the next:*/
+      x = rows[i].getElementsByTagName("TD")[0];
+      y = rows[i + 1].getElementsByTagName("TD")[0];
+      //check if the two rows should switch place:
+      if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+        //if so, mark as a switch and break the loop:
+        shouldSwitch = true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch
+      and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
+}
+$(document).ready(function(){
+	//inialize datatable
+    $('#myTable').DataTable();
+
+    //hide alert
+    $(document).on('click', '.close', function(){
+    	$('.alert').hide();
+    })
+});
+</script>
+
+<!-- Footer -->
+<footer class="w3-center w3-black w3-padding-16">
+  <p>Powered by <a href="#" title="Healthcare data analytics system" target="_blank" class="w3-hover-text-green">Healthcare data analytics system</a></p>
+</footer>
+
+</body>
+</html>
+
+
+7.doctorlogin.php
+
+<?php require_once "employeeLoginConnector.php"; ?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Login Form- Healthcare data analytics system</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <link rel="icon" type="image/x-icon" href="healthcare.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+    body{
+  background: #D17117;
+    font-family: 'Poppins', 'sans-serif';
+}
+
+    ::selection{
+    color: #fff;
+    background: #D17117;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.container{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.container .form{
+    background: #fff;
+    padding: 30px 35px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#toggle{
+    position:absolute;
+    top:50%;
+    right:18%;
+    transform:translateY(-50%);
+    width:20px;
+    height:20px;
+    border-radius: 5px;
+    background:url(show.png);
+    background-size:cover;
+    cursor: pointer;
+}
+#toggle.hide {
+
+    background:url(hidden.png);
+    background-size:cover;
+}
+
+    </style>
+
+
+</head>
+
+<body>
+<div class="container">
+        <div class="row">
+            <div class="col-md-4 offset-md-4 form login-form">          
+                <form action="doctorLogin.php" method="POST" autocomplete="" class="was-validated" >
+               
+                    <h2 class="text-center"> Employee Log In</h2>
+                    <p class="text-center">Please Login with your username and password</p>
+                    <?php include('errors.php'); ?>
+                    <div class="form-group">
+                    Username:
+                    <div class="input-group">
+                    <div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text">@</span>
+  </div>
+                        <input class="form-control" type="text"  id="username" name="username" required>
+                        <div class="invalid-feedback">Please enter username.</div>
+                    <div class="valid-feedback">Great!</div>
+                </div>
+                    </div>
+                </div>
+                    <div class="form-group">
+                    Password: <input class="form-control" type="password" name="pass"  id="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required>
+                    <div class="invalid-feedback">Please enter Password.</div>
+                    <div class="valid-feedback">Great!</div>
+                    <div id="toggle" onclick="showHide();"></div>    
+                        <script type="text/javascript">
+                         const password=document.getElementById('password');
+                         const toggle=document.getElementById('toggle');
+                         function showHide(){
+                         if(password.type =='password'){
+                            password.setAttribute('type','text');
+                            toggle.classList.remove('hide')
+                         }else{
+                            password.setAttribute('type','password');
+                            toggle.classList.add('hide')  
+                         }
+                         }
+                        </script>  
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                        <input class="btn btn-primary btn-block" type="submit" name="login" value="Login">
+                    </div>
+
+                    <a href="homePage.php"> <label class="btn btn-outline-info">Back </a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="btn btn-outline-danger" type="reset" name="clear" value="Clear">
+                 
+                </form>
+            </div>
+        </div>
+    </div>
+  <script src="script.js"></script>
+
+
+</body>
+
+</html>
+
+
+8.employee_config.php
+
+<?php
+
+define('DB_SERVER', 'localhost');
+define('DB_USERNAME', 'root');
+define('DB_PASSWORD', '');
+define('DB_NAME', 'healthCareSystem');
+
+$link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+
+// Check connection
+if($link === false){
+    die("ERROR: Could not connect. " . mysqli_connect_error());
+}
+?>
+
+9.employee_del.php
+
+<?php
+// Process delete operation after confirmation
+if(isset($_POST["id"]) && !empty($_POST["id"])){
+    // Include config file
+    require_once "employee_config.php";
+
+    // Prepare a delete statement
+    $sql = "DELETE FROM `tb_employeeInfo` WHERE id = ?";
+
+    if($stmt = mysqli_prepare($link, $sql)){
+        // Bind variables to the prepared statement as parameters
+        mysqli_stmt_bind_param($stmt, "i", $param_id);
+
+        // Set parameters
+        $param_id = trim($_POST["id"]);
+
+        // Attempt to execute the prepared statement
+        if(mysqli_stmt_execute($stmt)){
+            // Records deleted successfully. Redirect to landing page
+            header("location: adminHomepage.php");
+            exit();
+        } else{
+            echo "Oops! Something went wrong. Please try again later.";
+        }
+    }
+
+    // Close statement
+    mysqli_stmt_close($stmt);
+
+    // Close connection
+    mysqli_close($link);
+} else{
+    // Check existence of id parameter
+    if(empty(trim($_GET["id"]))){
+        // URL doesn't contain id parameter. Redirect to error page
+        header("location: employee_error.php");
+        exit();
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Employee Information</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+    <style type="text/css">
+        .wrapper{
+            width: 500px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="page-header">
+                        <h1>Delete Information</h1>
+                    </div>
+                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                        <div class="alert alert-danger fade in">
+                            <input type="hidden" name="id" value="<?php echo trim($_GET["id"]); ?>"/>
+                            <p>Are you sure you want to delete this record?</p><br>
+                            <p>
+                                <input type="submit" value="Yes" class="btn btn-danger">
+                                <a href="admin_homepage.php" class="btn btn-default">No</a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+10.employee_error.php
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+    <style type="text/css">
+        .wrapper{
+            width: 750px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="page-header">
+                        <h1>Invalid Request</h1>
+                    </div>
+                    <div class="alert alert-danger fade in">
+                        <p>Sorry, you've made an invalid request. Please <a href="adminHomepage.php" class="alert-link">go back</a> and try again.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+11.employee_new.php
+
+<?php require_once "doctorConnector.php"; ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Record Employee Information</title>
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<style>
+  body{
+    background:#D17117;
+    color:white;
+  }
+select:required:invalid {
+  color: gray;
+}
+option[value=""][disabled] {
+  display: none;
+}
+option {
+  color: black;
+}
+
+.container{
+    background: #fff;
+    border-radius: 5px;
+    width:60%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    float:center;
+    color:black;
+}
+#regForm {
+  background-color: #ffffff;
+  font-family: Raleway;
+  width: 180%;
+  margin-right:500px;
+}
+
+h1 {
+  text-align: center;  
+}
+
+input {
+  padding: 10px;
+  width: 100%;
+  font-size: 17px;
+  font-family: Raleway;
+  border: 1px solid #aaaaaa;
+
+}
+
+/* Mark input boxes that gets an error on validation: */
+input.invalid {
+  background-color: #ffdddd;
+}
+
+/* Hide all steps by default: */
+.tab {
+  display: none;
+}
+
+button {
+  background-color: #2611a8;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 17px;
+  font-family: Raleway;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+#prevBtn {
+  background-color: #bbbbbb;
+}
+
+/* Make circles that indicate the steps of the form: */
+.step {
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbbbbb;
+  border: none;  
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 0.5;
+}
+
+.step.active {
+  opacity: 1;
+}
+
+/* Mark the steps that are finished and valid: */
+.step.finish {
+  background-color: #04AA6D;
+}
+.footer {
+      background:#2611a8;
+      color:#fff;
+      font-style:italic;
+      padding:10px;
+      text-align:left;
+      width:100%;
+      position: fixed;
+      margin-top: 400px;
+     }
+    .footer a{
+      color:#DA1212;
+     }
+     #toggle{
+position:absolute;
+top:77.5%;
+right:18%;
+transform:translateY(-50%);
+width:18px;
+height:18px;
+background:url(show.png);
+background-size:cover;
+cursor: pointer;
+}
+#toggle.hide {
+
+background:url(hidden.png);
+background-size:cover;
+}
+#toggle1{
+position:absolute;
+top:83%;
+right:18%;
+transform:translateY(-50%);
+width:18px;
+height:18px;
+background:url(show.png);
+background-size:cover;
+cursor: pointer;
+}
+#toggle1.hide {
+
+background:url(hidden.png);
+background-size:cover;
+}
+
+    </style>
+</head>
+<body>
+<div class="container">
+        <div class="row">
+            <div class="col-md-4 offset-md-4 form">
+            <form method="POST" action="employee_new.php">
+              <h4>Register New Employee</h4> <hr>
+                    
+				     <div class="row form-group">
+					   <div class="col-sm-2">
+             </div>
+                <div class="col-sm-10">
+                 <b>Employee First Name:</b><input type="text" name="fname" placeholder="Enter First Name" required>
+                 <b>Employee Last Name:</b><input class="form-control" type="text" placeholder="Enter Last Name" name="lname" required>
+                <div class="invalid-feedback">Please enter name.</div>
+                <div class="valid-feedback">Great!</div>
+                </div>
+                </div>
+<!--email-->
+                <div class="row form-group">
+					        <div class="col-sm-2">
+                    </div>
+                <div class="col-sm-10">
+                <b>Employee Email:</b><input class="form-control" type="text" placeholder="Enter Email" name="email" required>
+                    <div class="invalid-feedback">Please enter Employee Email.</div>
+                    <div class="valid-feedback">Great!</div>
+                </div>
+                </div>
+               <!--username-->
+                <div class="row form-group">
+					      <div class="col-sm-2">
+                     </div>
+                <div class="col-sm-10">
+                 <b>User Name:</b><input class="form-control" type="text" name="username" placeholder="Enter Username" required>
+                     <div class="invalid-feedback">Please enter a valid username.</div>
+                    <div class="valid-feedback">Great!</div>
+                    </div>
+                    </div>
+
+                    <!--password-->
+                <div class="row form-group">
+					        <div class="col-sm-2">
+                    </div>
+                <div class="col-sm-10">
+                <b>Password:</b><input class="form-control" type="text" id="password" name="pass" placeholder="Enter the Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required>
+                    <div class="invalid-feedback">Please enter Password.</div>
+                    <div class="valid-feedback">Looks good!</div>
+                    <div id="toggle" onclick="showHide();"></div>    
+                        <script type="text/javascript">
+                         const password=document.getElementById('password');
+                         const toggle=document.getElementById('toggle');
+                         function showHide(){
+                         if(password.type =='password'){
+                            password.setAttribute('type','text');
+                            toggle.classList.remove('hide')
+                         }else{
+                            password.setAttribute('type','password');
+                            toggle.classList.add('hide')  
+                         }
+                         }
+                        </script>   
+                </div>
+                </div>
+           <!--end of password -->        
+ <!-- cpassword-->
+ <div class="row form-group">
+					        <div class="col-sm-2">
+                    </div>
+                <div class="col-sm-10">
+                <b>Confirm Password:</b><input class="form-control" type="text" placeholder="Confirm Password" name="cpassword" id="password1" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required>
+                    <div class="invalid-feedback">Please Confirm the Password.</div>
+                    <div class="valid-feedback">Great!</div>
+                    <div id="toggle1" onclick="showHide1();"></div>      
+                        <script type="text/javascript">
+                         const password1=document.getElementById('password1');
+                         const toggle1=document.getElementById('toggle1');
+                         function showHide1(){
+                         if(password1.type =='password'){
+                            password1.setAttribute('type','text');
+                            toggle1.classList.remove('hide')
+                         }else{
+                            password1.setAttribute('type','password');
+                            toggle1.classList.add('hide')  
+                         }
+                         }
+                         </script> 
+                </div>
+                </div>
+                 <!--end of cpassword -->
+  <!-- Birthday-->
+  <div class="row form-group">
+					        <div class="col-sm-2">
+                    </div>
+                <div class="col-sm-10">
+                <b>Birth-day:</b><input class="form-control" type="date" placeholder="Enter Birth day" name="bday" required>
+                    <div class="invalid-feedback">Please enter Employee's BD.</div>
+                    <div class="valid-feedback">Great!</div>
+                </div>
+                </div>
+  <!--end of Birthday -->
+
+     <!-- Civil id number-->
+     <div class="row form-group">
+					        <div class="col-sm-2">
+                    </div>
+                <div class="col-sm-10">
+                <b>Civil ID:</b><input class="form-control" type="text" placeholder="Enter Civil id number" name="civilid" required>
+                    <div class="invalid-feedback">Please enter Employee's Civil ID.</div>
+                    <div class="valid-feedback">Great!</div>
+                </div>
+                </div>
+      <!--end of Civil id number-->
+     
+      <!-- Address-->
+      <div class="row form-group">
+					        <div class="col-sm-2">
+                    </div>
+                <div class="col-sm-10">
+                <b>Address:</b><input class="form-control" type="text" placeholder="Enter Address Location" name="address" required>
+                    <div class="invalid-feedback">Please enter Employee's Address .</div>
+                    <div class="valid-feedback">Great!</div>
+                </div>
+                </div>
+      <!--end of Address-->
+  <hr>
+  <center>
+  <h3>Employee details</h3>  
+  </center> <br>
+      <!-- employeeId-->
+      <div class="row form-group">
+					      <div class="col-sm-2">
+                     </div>
+                <div class="col-sm-10"> 			
+                <b>Employee ID:</b><input class="form-control" type="text" name="employeeId" placeholder="Enter Enter employee ID" required>
+                     <div class="invalid-feedback">Please enter a employeeId.</div>
+                    <div class="valid-feedback">Great!</div>
+                    </div>
+                    </div>
+      <!--end of employeeId-->
+      
+      <!-- jobTitle-->
+      <div class="row form-group">
+					      <div class="col-sm-2">
+                     </div>
+                <div class="col-sm-10">
+                <b>Employee JobTitle:</b><input class="form-control" type="text" name="jobTitle" placeholder="Enter job Title " required>
+                     <div class="invalid-feedback">Please enter a job Title.</div>
+                    <div class="valid-feedback">Great!</div>
+                    </div>
+                    </div>
+       <!--end of jobTitle-->
+
+      <!-- branchLocation-->
+      <div class="row form-group">
+					      <div class="col-sm-2">
+                     </div>
+                <div class="col-sm-10">
+                <b>branch Location:</b><input class="form-control" type="text" name="branchLocation" placeholder="Enter Branch Location" required>
+                     <div class="invalid-feedback">Please enter a valid branch Location.</div>
+                    <div class="valid-feedback">Great!</div>
+                    </div>
+                    </div>
+       <!--end of branchLocation-->
+
+      <!-- phone-->
+      <div class="row form-group">
+					      <div class="col-sm-2">
+                     </div>
+                <div class="col-sm-10">
+                <b>Employee Phone Number:</b><span class="input-group-text"> (+968)</span><input class="form-control" type="number" name="phone" placeholder="Enter Phone Number" required>
+                     <div class="invalid-feedback">Please enter a valid Phone Number..</div>
+                    <div class="valid-feedback">Great!</div>
+                    
+                  </div>
+                    </div>
+         <!--end of phone-->
+
+                    <div>
+                <button type="submit" name="add" class="btn btn-primary"> Add</button><br>
+                <p><a href="adminHomepage.php" class="btn btn-primary">Back</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
+</html>
+
+
+12.employee_Read.php
+
+<?php
+// Check existence of id parameter before processing further
+if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
+    // Include config file
+    require_once "employee_config.php";
+
+    // Prepare a select statement
+    $sql = "SELECT * FROM `tb_employeeInfo` WHERE id = ?";
+
+    if($stmt = mysqli_prepare($link, $sql)){
+        // Bind variables to the prepared statement as parameters
+        mysqli_stmt_bind_param($stmt, "i", $param_id);
+
+        // Set parameters
+        $param_id = trim($_GET["id"]);
+
+        // Attempt to execute the prepared statement
+        if(mysqli_stmt_execute($stmt)){
+            $result = mysqli_stmt_get_result($stmt);
+
+            if(mysqli_num_rows($result) == 1){
+                /* Fetch result row as an associative array. Since the result set contains only one row, we don't need to use while loop */
+                $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+
+                // Retrieve individual field value
+                $id=$row['id'];
+                $fname=$row['fname'];
+                $lname=$row['lname'];
+                $email=$row['email'];
+                $username=$row['username'];
+                $bday=$row['bday'];
+                $civilid=$row['civilid'];
+                $address=$row['address'];
+                $employeeId=$row['employeeId'];
+                $jobTitle=$row['jobTitle'];
+                $branchLocation=$row['branchLocation'];
+                $phone=$row['phone'];
+                
+            } else{
+                // URL doesn't contain valid id parameter. Redirect to error page
+                header("location: employee_error.php");
+                exit();
+            }
+
+        } else{
+            echo "Oops! Something went wrong. Please try again later.";
+        }
+    }
+
+    // Close statement
+    mysqli_stmt_close($stmt);
+
+    // Close connection
+    mysqli_close($link);
+} else{
+    // URL doesn't contain id parameter. Redirect to error page
+    header("location: employee_error.php");
+    exit();
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Information</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+    
+    <style type="text/css">
+       
+        .wrapper{
+            width: 500px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="page-header">
+                        <h1>View employee Information</h1>
+                    </div>
+                    <div class="form-group">
+                        <label>Name</label>
+                        <p class="form-control-static"><?php echo $row["fname"]; ?> <?php echo $row["lname"]; ?></p> 
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <p class="form-control-static"><?php echo $row["email"]; ?></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <p class="form-control-static"><?php echo $row["username"]; ?></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Birthday & Civil ID</label>
+                        <p class="form-control-static"><?php echo $row["bday"]; ?></p> 
+                        <p class="form-control-static"><?php echo $row["civilid"]; ?></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <p class="form-control-static"><?php echo $row["address"]; ?></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Employee Details(employeeId & phone) </label>
+                        <p class="form-control-static"><?php echo $row["employeeId"]; ?><?php echo $row["phone"]; ?></p> 
+                        </div>
+
+                    <div class="form-group">
+                        <label>Employee Details(branchLocation & jobTitle)</label>
+                        <p class="form-control-static"><?php echo $row["branchLocation"]; ?> <?php echo $row["jobTitle"]; ?></p> 
+                    </div>
+
+                    <p><a href="adminHomepage.php" class="btn btn-primary">Back</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+13.employee_update.php
+
+
+<?php
+// Include config file
+require_once "employee_config.php";
+
+// Define variables and initialize with empty values 
+$fname = $lname = $email = $username = $bday = $civilid = $address = $employeeId = $jobTitle = $branchLocation = $phone = "";
+$fname_err = $lname_err = $email_err = $username_err = $bday_err = $civilid_err = $address_err = $employeeId_err = $jobTitle_err = $branchLocation_err = $phone_err = "";
+
+// Processing form data when form is submitted
+if(isset($_POST["id"]) && !empty($_POST["id"])){
+    // Get hidden input value
+    $id = $_POST["id"];
+
+    // Validate fname
+    $input_fname = trim($_POST["fname"]);
+    if(empty($input_fname)){
+        $fname_err = "Please enter a first name.";
+    } elseif(!filter_var($input_fname, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+        $fname_err = "Please enter a valid fname.";
+    } else{
+        $fname = $input_fname;
+    }
+
+     // Validate lname
+     $input_lname = trim($_POST["lname"]);
+     if(empty($input_lname)){
+         $lname_err = "Please enter a last name.";
+     } elseif(!filter_var($input_lname, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+         $lname_err = "Please enter a valid lname.";
+     } else{
+         $lname = $input_lname;
+     }
+
+     // Validate email
+     $input_email = trim($_POST["email"]);
+     if(empty($input_email)){
+         $email_err = "Please enter a valid email.";
+     } elseif(!filter_var($input_email, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+         $email_err = "Please enter a valid email.";
+     } else{
+         $email = $input_email;
+     }
+
+ // Validate username
+    $input_username = trim($_POST["username"]);
+    if(empty($input_username)){
+        $username_err = "Please enter username.";
+    } elseif(!filter_var($input_username, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+        $username_err = "Please enter a valid username.";
+    } else{
+        $username = $input_username;
+    }
+
+     // Validate bday
+     $input_bday = trim($_POST["bday"]);
+     if(empty($input_bday)){
+         $bday_err = "Please enter bday.";
+     } elseif(!filter_var($input_bday, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+         $bday_err = "Please enter a valid bday.";
+     } else{
+         $bday = $input_bday;
+     }
+
+     // Validate civilid
+     $input_civilid = trim($_POST["civilid"]);
+     if(empty($input_civilid)){
+         $civilid_err = "Please enter a valid civilid.";
+     } elseif(!filter_var($input_civilid, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+         $civilid_err = "Please enter a valid civilid.";
+     } else{
+         $civilid = $input_civilid;
+     }
+
+     // Validate address
+    $input_address = trim($_POST["address"]);
+    if(empty($input_address)){
+        $address_err = "Please enter an address.";
+    } elseif(!filter_var($input_address, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+        $address_err = "Please enter a valid address.";
+    } else{
+        $address = $input_address;
+    }
+
+     // Validate employeeId 	
+     $input_employeeId = trim($_POST["employeeId"]);
+     if(empty($input_employeeId)){
+         $employeeId_err = "Please enter employeeId.";
+     } elseif(!filter_var($input_employeeId, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+         $employeeId_err = "Please enter employeeId.";
+     } else{
+         $employeeId = $input_employeeId;
+     }
+
+     // Validate jobTitle
+     $input_jobTitle = trim($_POST["jobTitle"]);
+     if(empty($input_jobTitle)){
+         $jobTitle_err = "Please enter jobTitle.";
+     } elseif(!filter_var($input_jobTitle, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+         $jobTitle_err = "Please enter jobTitle.";
+     } else{
+         $jobTitle = $input_jobTitle;
+     }
+
+ // Validate branchLocation 		
+    $input_branchLocation = trim($_POST["branchLocation"]);
+    if(empty($input_branchLocation)){
+        $branchLocation_err = "Please enter branchLocation.";
+    } elseif(!filter_var($input_branchLocation, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+        $branchLocation_err = "Please enter a valid branchLocation.";
+    } else{
+        $branchLocation = $input_branchLocation;
+    }
+
+     // Validate phone
+     $input_phone = trim($_POST["phone"]);
+     if(empty($input_phone)){
+         $phone_err = "Please enter phone.";
+     } elseif(!filter_var($input_phone, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+         $phone_err = "Please enter a valid number.";
+     } else{
+         $phone = $input_phone;
+     }
+
+
+
+
+
+    // Check input errors before inserting in database                                                                                                                 
+    if(empty($fname_err) && empty($lname_err) && empty($email_err) && empty($username_err) && empty($bday_err) && empty($civilid_err) && empty($address_err) && empty($employeeId_err) && empty($jobTitle_err) && empty($branchLocation_err) && empty($phone_err)){
+        // Prepare an update statement
+        $sql = "UPDATE `tb_employeeInfo` SET fname=?, lname=?, email=?, username=?, bday=?, civilid=?, address=?, companyid=?, companyname=?, companylocation=?, companyphone=? WHERE id=?";
+
+        if($stmt = mysqli_prepare($link, $sql)){
+            // Bind variables to the prepared statement as parameters
+            mysqli_stmt_bind_param($stmt, "sssi", $param_fname, $param_lname, $param_email, $param_username, $param_bday, $param_civilid, $param_address, $param_employeeId, $param_jobTitle, $param_branchLocation, $param_phone, $param_id);
+
+            // Set parameters   
+            $param_fname = $fname;
+            $param_lname = $lname;
+            $param_email = $email;
+            $param_username = $username;
+            $param_bday = $bday;
+            $param_civilid = $civilid;
+            $param_address = $address;
+            $param_employeeId = $employeeId;
+            $param_jobTitle = $jobTitle;
+            $param_branchLocation = $branchLocation;
+            $param_phone = $phone;
+            $param_id = $id;
+
+            // Attempt to execute the prepared statement
+            if(mysqli_stmt_execute($stmt)){
+                // Records updated successfully. Redirect to admin_homepage page
+                header("location: adminHomepage.php");
+                exit();
+            } else{
+                echo "Something went wrong. Please try again later.";
+            }
+        }
+
+        // Close statement
+        mysqli_stmt_close($stmt);
+    }
+
+    // Close connection
+    mysqli_close($link);
+} else{
+    // Check existence of id parameter before processing further
+    if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
+        // Get URL parameter
+        $id =  trim($_GET["id"]);
+
+        // Prepare a select statement
+        $sql = "SELECT * FROM `tb_employeeInfo` WHERE id = ?";
+        if($stmt = mysqli_prepare($link, $sql)){
+            // Bind variables to the prepared statement as parameters
+            mysqli_stmt_bind_param($stmt, "i", $param_id);
+
+            // Set parameters
+            $param_id = $id;
+
+            // Attempt to execute the prepared statement
+            if(mysqli_stmt_execute($stmt)){
+                $result = mysqli_stmt_get_result($stmt);
+
+                if(mysqli_num_rows($result) == 1){
+                    /* Fetch result row as an associative array. Since the result set contains only one row, we don't need to use while loop */
+                    $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+
+                    // Retrieve individual field value
+                $fname=$row['fname'];
+                $lname=$row['lname'];
+                $email=$row['email'];
+                $username=$row['username'];
+                $pass=$row['pass'];
+                $bday=$row['bday'];
+                $civilid=$row['civilid'];
+                $address=$row['address'];			
+                $employeeId=$row['employeeId'];
+                $jobTitle=$row['jobTitle'];
+                $branchLocation=$row['branchLocation'];
+                $phone=$row['phone'];
+           
+                } else{
+                    // URL doesn't contain valid id. Redirect to error page
+                    header("location: employee_error.php");
+                    exit();
+                }
+
+            } else{
+                echo "Oops! Something went wrong. Please try again later.";
+            }
+        }
+
+        // Close statement
+        mysqli_stmt_close($stmt);
+
+        // Close connection
+        mysqli_close($link);
+    }  else{
+        // URL doesn't contain id parameter. Redirect to error page
+        header("location: employee_error.php");
+        exit();
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Employee Information</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+    <style type="text/css">
+        .wrapper{
+            width: 500px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="page-header">
+                        <h2>Update Employee Record</h2>
+                    </div>
+                    <p>Please edit the input values .</p>
+                    <form action="<?php echo htmlspecialchars(basename($_SERVER['REQUEST_URI'])); ?>" method="post">
+                      <!--fname-->
+                            <label>fname</label>
+                            <input type="text" name="fname" class="form-control" value="<?php echo $fname; ?>">
+                       <!--lname-->
+                            <label>lname</label>
+                            <input type="text" name="lname" class="form-control" value="<?php echo $lname; ?>">
+                      <!--email-->
+                            <label>email</label>
+                            <input type="text" name="email" class="form-control" value="<?php echo $email; ?>">
+                    <!--password-->
+                             <label>password</label>
+                            <input type="text" name="pass" class="form-control" value="<?php echo $pass; ?>">
+                      <!--username-->
+                            <label>username</label>
+                            <input type="text" name="username" class="form-control" value="<?php echo $username; ?>">
+                       <!--bday-->
+                            <label>Birth day</label>
+                            <input type="date" name="bday" class="form-control" value="<?php echo $bday; ?>">
+
+                        <!--civilid-->
+                        <label>civilid</label>
+                        <input type="text" name="civilid" class="form-control" value="<?php echo $civilid; ?>">
+
+                       <!--address-->
+                            <label>address</label>
+                            <input type="text" name="address" class="form-control" value="<?php echo $address; ?>">
+                      
+                        <!--employeeId--> 			
+                            <label>employeeId</label>
+                            <input type="text" name="employeeId" class="form-control" value="<?php echo $employeeId; ?>">
+                      
+                        <!--jobTitle-->
+                            <label>jobTitle</label>
+                            <input type="text" name="jobTitle" class="form-control" value="<?php echo $jobTitle; ?>">
+                        <!--branchLocation-->
+                            <label>branchLocation</label>
+                            <input type="text" name="branchLocation" class="form-control" value="<?php echo $branchLocation; ?>">
+                      <!--phone-->
+                            <label> Phone</label>
+                            <input type="text" name="phone" class="form-control" value="<?php echo $phone; ?>">
+
+                        <input type="hidden" name="id" value="<?php echo $id; ?>"/>
+                        <input type="submit" class="btn btn-primary" value="Submit">
+                        <a href="adminHomepage.php" class="btn btn-default">Back</a>
+                        <a href="adminHomepage.php" class="btn btn-default">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+14.employeeLoginConnector.php
+
+<?php
+session_start();
+
+// initializing variables
+
+$email    = "";
+$pass    = "";
+$errors = array();
+
+// connect to the database
+$con = mysqli_connect('localhost', 'root', '','healthCareSystem');
+// LOGIN USER
+
+if (isset($_POST['login'])) {
+     
+	$username = mysqli_real_escape_string($con, $_POST['username']);
+	$pass = mysqli_real_escape_string($con, $_POST['pass']);
+  
+  
+	if (count($errors) == 0) {
+		 $check = "SELECT * FROM `tb_employeeInfo` WHERE username = '$username' AND pass = '$pass'";
+		$res = mysqli_query($con, $check);
+		if (mysqli_num_rows($res) == 1) {
+		  $_SESSION['username'] = $username;
+		   header('location: doctorHoempage.php');
+		   exit();
+		}else {
+		  $errors['username'] = "Wrong username/password !";
+		}
+	}
+  }
+
+?>
+
+15.error.php
+
+<?php  if (count($errors) > 0) : ?>
+  <div class="error">
+  	<?php foreach ($errors as $error) : ?>
+  	  <p><?php echo $error ?></p>
+  	<?php endforeach ?>
+  </div>
+<?php  endif ?>
+
+16.homePage.php
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Home Page-Healthcare data analytics system</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="icon" type="image/x-icon" href="healthcare.png">
+</head>
+<body>
+
+<!-- Navbar (sit on top) -->
+<div class="w3-top">
+  <div class="w3-bar w3-white w3-wide w3-padding w3-card">
+    <a href="#home" class="w3-bar-item w3-button"><b>HCDAs </b> Healthcare data analytics system</a>
+    <!-- Float links to the right. Hide them on small screens -->
+    <div class="w3-right w3-hide-small">
+      <a href="aboutUs.php" class="w3-bar-item w3-button">About Us</a>
+      <a href="doctorLogin.php" class="w3-bar-item w3-button">Login (Employee)</a>
+      <a href="adminLogin.php" class="w3-bar-item w3-button">Login (Admins)</a>
+    </div>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="w3-display-container w3-content w3-wide" style="max-width:1500px;" id="home">
+  <img class="w3-image" src="background.jpeg" alt="background" width="1800" height="800">
+  <div class="w3-display-middle w3-margin-top w3-center">
+    <h1 class="w3-xxlarge w3-text-white"><span class="w3-padding w3-black w3-opacity-min"><b>Healthcare data analytics system</b></span> </h1>
+  </div>
+</header>
+
+<!-- Page content -->
+<div class="w3-content w3-padding" style="max-width:1564px">
+
+  
+  
+  <!-- Contact Section -->
+  <div class="w3-container w3-padding-32" id="contact">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Contact Us</h3>
+    <p>Lets get in touch and left your feedback </p>
+    <form action="/action_page.php" target="_blank">
+      <input class="w3-input w3-border" type="text" placeholder="Your Name!!" required name="Name">
+      <input class="w3-input w3-section w3-border" type="text" placeholder="Your Email" required name="Email">
+     <input class="w3-input w3-section w3-border" type="text" placeholder="Comment" required name="Comment">
+      <button class="w3-button w3-black w3-section" type="submit">
+        <i class="fa fa-paper-plane"></i> SEND FEEDBACK!!
+      </button>
+    </form>
+  </div>
+  
+
+</div>
+
+
+<!-- Footer -->
+<footer class="w3-center w3-black w3-padding-16">
+  <p>Powered by <a href="#" title="Healthcare data analytics system" target="_blank" class="w3-hover-text-green">Healthcare data analytics system</a></p>
+</footer>
+
+</body>
+</html>
+
+
+17.patient_config.php
+
+<?php
+
+define('DB_SERVER', 'localhost');
+define('DB_USERNAME', 'root');
+define('DB_PASSWORD', '');
+define('DB_NAME', 'healthCareSystem');
+
+$link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+
+// Check connection
+if($link === false){
+    die("ERROR: Could not connect. " . mysqli_connect_error());
+}
+?>
+
+
+18.patient_del.php
+
+<?php
+// Process delete operation after confirmation
+if(isset($_POST["id"]) && !empty($_POST["id"])){
+    // Include config file
+    require_once "patient_config.php";
+
+    // Prepare a delete statement
+    $sql = "DELETE FROM `patient_information` WHERE id = ?";
+
+    if($stmt = mysqli_prepare($link, $sql)){
+        // Bind variables to the prepared statement as parameters
+        mysqli_stmt_bind_param($stmt, "i", $param_id);
+
+        // Set parameters
+        $param_id = trim($_POST["id"]);
+
+        // Attempt to execute the prepared statement
+        if(mysqli_stmt_execute($stmt)){
+            // Records deleted successfully. Redirect to landing page
+            header("location: doctorHoempage.php");
+            exit();
+        } else{
+            echo "Oops! Something went wrong. Please try again later.";
+        }
+    }
+
+    // Close statement
+    mysqli_stmt_close($stmt);
+
+    // Close connection
+    mysqli_close($link);
+} else{
+    // Check existence of id parameter
+    if(empty(trim($_GET["id"]))){
+        // URL doesn't contain id parameter. Redirect to error page
+        header("location: patient_error.php");
+        exit();
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Patients Information</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+    <style type="text/css">
+        .wrapper{
+            width: 500px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="page-header">
+                        <h1>Delete Information</h1>
+                    </div>
+                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                        <div class="alert alert-danger fade in">
+                            <input type="hidden" name="id" value="<?php echo trim($_GET["id"]); ?>"/>
+                            <p>Are you sure you want to delete this record?</p><br>
+                            <p>
+                                <input type="submit" value="Yes" class="btn btn-danger">
+                                <a href="doctorHoempage.php" class="btn btn-default">No</a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+19.patient_error.php
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+    <style type="text/css">
+        .wrapper{
+            width: 750px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="page-header">
+                        <h1>Invalid Request</h1>
+                    </div>
+                    <div class="alert alert-danger fade in">
+                        <p>Sorry, you've made an invalid request. Please <a href="doctorHoempage.php" class="alert-link">go back</a> and try again.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+20.patient_new.php
+
+<?php require_once "patientConnector.php"; ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Record Patient Information</title>
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<style>
+  body{
+    background:#D17117;
+    color:white;
+  }
+select:required:invalid {
+  color: gray;
+}
+option[value=""][disabled] {
+  display: none;
+}
+option {
+  color: black;
+}
+
+.container{
+    background: #fff;
+    border-radius: 5px;
+    width:60%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    float:center;
+    color:black;
+}
+#regForm {
+  background-color: #ffffff;
+  font-family: Raleway;
+  width: 180%;
+  margin-right:500px;
+}
+
+h1 {
+  text-align: center;  
+}
+
+input {
+  padding: 10px;
+  width: 100%;
+  font-size: 17px;
+  font-family: Raleway;
+  border: 1px solid #aaaaaa;
+
+}
+
+/* Mark input boxes that gets an error on validation: */
+input.invalid {
+  background-color: #ffdddd;
+}
+
+/* Hide all steps by default: */
+.tab {
+  display: none;
+}
+
+button {
+  background-color: #2611a8;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 17px;
+  font-family: Raleway;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+#prevBtn {
+  background-color: #bbbbbb;
+}
+
+/* Make circles that indicate the steps of the form: */
+.step {
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbbbbb;
+  border: none;  
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 0.5;
+}
+
+.step.active {
+  opacity: 1;
+}
+
+/* Mark the steps that are finished and valid: */
+.step.finish {
+  background-color: #04AA6D;
+}
+.footer {
+      background:#2611a8;
+      color:#fff;
+      font-style:italic;
+      padding:10px;
+      text-align:left;
+      width:100%;
+      position: fixed;
+      margin-top: 400px;
+     }
+    .footer a{
+      color:#DA1212;
+     }
+     #toggle{
+position:absolute;
+top:77.5%;
+right:18%;
+transform:translateY(-50%);
+width:18px;
+height:18px;
+background:url(show.png);
+background-size:cover;
+cursor: pointer;
+}
+#toggle.hide {
+
+background:url(hidden.png);
+background-size:cover;
+}
+#toggle1{
+position:absolute;
+top:83%;
+right:18%;
+transform:translateY(-50%);
+width:18px;
+height:18px;
+background:url(show.png);
+background-size:cover;
+cursor: pointer;
+}
+#toggle1.hide {
+
+background:url(hidden.png);
+background-size:cover;
+}
+
+    </style>
+</head>
+<body>
+<div class="container">
+        <div class="row">
+            <div class="col-md-4 offset-md-4 form">
+            <form method="POST" action="patient_new.php">
+              <h4>Register New Patient Record</h4> <hr>
+                    
+				     <div class="row form-group">
+					   <div class="col-sm-2">
+             </div>
+                <div class="col-sm-10">
+                 <b>Patient Name:</b><input type="text" name="patientName" placeholder="Enter patient Name " required>
+                 <b>Patient Age:</b><input class="form-control" type="number" placeholder="Enter patient Age" name="patientAge" required>
+                <div class="invalid-feedback">Please enter name and age.</div>
+                <div class="valid-feedback">Great!</div>
+                </div>
+                </div>
+            <!--patientBD-->
+                <div class="row form-group">
+					        <div class="col-sm-2">
+                    </div>
+                <div class="col-sm-10">
+                <b>Patient BD:</b><input class="form-control" type="date" placeholder="Enter patientBD" name="patientBD" required>
+                    <div class="invalid-feedback">Please enter patientBD.</div>
+                    <div class="valid-feedback">Great!</div>
+                </div>
+                </div>
+               <!--patientCivilId-->
+                <div class="row form-group">
+					      <div class="col-sm-2">
+                     </div>
+                <div class="col-sm-10">
+                 <b>Patient CivilId:</b><input class="form-control" type="number" name="patientCivilId" placeholder="Enter patient CivilId" required>
+                     <div class="invalid-feedback">Please enter a valid patientCivilId.</div>
+                    <div class="valid-feedback">Great!</div>
+                    </div>
+                    </div>
+
+              
+                <!-- patientLocation-->
+                <div class="row form-group">
+					        <div class="col-sm-2">
+                    </div>
+                <div class="col-sm-10">
+                <b>patientLocation:</b><input class="form-control" type="text" placeholder="Enter Patient Location" name="patientLocation" required>
+                    <div class="invalid-feedback">Please enter patientLocation.</div>
+                    <div class="valid-feedback">Great!</div>
+                </div>
+                </div>
+  <!--end of patientLocation -->
+
+     <!-- PatientGender-->
+     <div class="row form-group">
+					        <div class="col-sm-2">
+                    </div>
+                <div class="col-sm-10">
+                <b>PatientGender:</b><input class="form-control" type="text" placeholder="Enter patientGender" name="patientGender" required>
+                    <div class="invalid-feedback">Please enter Patient Gender.</div>
+                    <div class="valid-feedback">Great!</div>
+                </div>
+                </div>
+      <!--end of patientGender-->
+     
+      <!-- patientPhone-->
+      <div class="row form-group">
+					        <div class="col-sm-2">
+                    </div>
+                <div class="col-sm-10">
+                <b>patientPhone:</b><input class="form-control" type="number" placeholder="Enter patientPhone" name="patientPhone" required>
+                    <div class="invalid-feedback">Please enter patientPhone.</div>
+                    <div class="valid-feedback">Great!</div>
+                </div>
+                </div>
+      <!--end of patientPhone-->
+
+      <!-- patientDisease-->
+      <div class="row form-group">
+					      <div class="col-sm-2">
+                     </div>
+                <div class="col-sm-10"> 			
+                <b>Patient Disease:</b><input class="form-control" type="text" name="patientDisease" placeholder="Enter Enter patientDisease " required>
+                     <div class="invalid-feedback">Please enter a patientDisease.</div>
+                    <div class="valid-feedback">Great!</div>
+                    </div>
+                    </div>
+      <!--end of patientDisease-->
+
+      <!-- diseaseSymptoms-->
+      <div class="row form-group">
+					      <div class="col-sm-2">
+                     </div>
+                <div class="col-sm-10"> 			
+                <b>Symptoms:</b><input class="form-control" type="text" name="diseaseSymptoms" placeholder="Enter Enter Symptoms " required>
+                     <div class="invalid-feedback">Please enter a Symptoms.</div>
+                    <div class="valid-feedback">Great!</div>
+                    </div>
+                    </div>
+      <!--end of diseaseSymptoms-->
+      
+      <!-- recordDate-->
+      <div class="row form-group">
+					      <div class="col-sm-2">
+                     </div>
+                <div class="col-sm-10">
+                <b>Date</b><input class="form-control" type="date" name="recordDate" placeholder="Enter record Date" required>
+                     <div class="invalid-feedback">Please enter a recordDate.</div>
+                    <div class="valid-feedback">Great!</div>
+                    </div>
+                    </div>
+       <!--end of recordDate-->
+
+ 
+                    <div>
+                <button type="submit" name="add" class="btn btn-primary"> Add</button><br>
+                <p><a href="doctorHoempage.php" class="btn btn-primary">Back</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+  
+
+
+</body>
+</html>
+
+21.patient_read.php
+
+<?php
+// Check existence of id parameter before processing further
+if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
+    // Include config file
+    require_once "patient_config.php";
+
+    // Prepare a select statement
+    $sql = "SELECT * FROM `patient_information` WHERE id = ?";
+
+    if($stmt = mysqli_prepare($link, $sql)){
+        // Bind variables to the prepared statement as parameters
+        mysqli_stmt_bind_param($stmt, "i", $param_id);
+
+        // Set parameters
+        $param_id = trim($_GET["id"]);
+
+        // Attempt to execute the prepared statement
+        if(mysqli_stmt_execute($stmt)){
+            $result = mysqli_stmt_get_result($stmt);
+
+            if(mysqli_num_rows($result) == 1){
+                /* Fetch result row as an associative array. Since the result set contains only one row, we don't need to use while loop */
+                $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+
+                // Retrieve individual field value
+                //patient_name	patient_age	patient_BD	patient_civilId	patient_location	patient_gender	patient_phone	patient_disease	recordDate
+                $id=$row['id'];
+                $patientName=$row['patientName'];
+                $patientAge=$row['patientAge'];
+                $patientBD=$row['patientBD'];
+                $patientCivilId=$row['patientCivilId'];
+                $patientLocation=$row['patientLocation'];
+                $patientGender=$row['patientGender'];
+                $patientPhone=$row['patientPhone'];
+                $patientDisease=$row['patientDisease'];
+                $recordDate=$row['recordDate'];
+            
+            } else{
+                // URL doesn't contain valid id parameter. Redirect to error page
+                header("location: patient_error.php");
+                exit();
+            }
+
+        } else{
+            echo "Oops! Something went wrong. Please try again later.";
+        }
+    }
+
+    // Close statement
+    mysqli_stmt_close($stmt);
+
+    // Close connection
+    mysqli_close($link);
+} else{
+    // URL doesn't contain id parameter. Redirect to error page
+    header("location: patient_error.php");
+    exit();
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Information</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+    
+    <style type="text/css">
+       
+        .wrapper{
+            width: 500px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="page-header">
+                        <h1>View Patient Information</h1>
+                    </div><!--patient_name	patient_age	patient_BD	patient_civilId	patient_location	patient_gender	patient_phone	patient_disease	recordDate-->
+
+                    <div class="form-group">
+                        <label>Name</label>							
+                        <p class="form-control-static"><?php echo $row["patientName"]; ?> </p> 
+                    </div>
+                    <div class="form-group">
+                        <label>Patient Age</label>
+                        <p class="form-control-static"><?php echo $row["patientAge"]; ?></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Patient BD</label>
+                        <p class="form-control-static"><?php echo $row["patientBD"]; ?></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Patient Civil ID</label>
+                        <p class="form-control-static"><?php echo $row["patientCivilId"]; ?></p> 
+                    </div>
+                    <div class="form-group">
+                        <label>Patient Address</label><!--patient_location	patient_gender	patient_phone	patient_disease	recordDate-->
+                        <p class="form-control-static"><?php echo $row["patientLocation"]; ?></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Patient Gender and Phone number</label>
+                        <p class="form-control-static"><?php echo $row["patientGender"]; ?> <?php echo $row["patientPhone"]; ?></p> 
+                        <p class="form-control-static"><?php echo $row["patientDisease"]; ?> <?php echo $row["recordDate"]; ?></p> 
+                    </div>
+                    <div class="form-group">
+                        <label>Disease Details</label>
+                        <p class="form-control-static"><?php echo $row["patientDisease"]; ?> </p> 
+                        <p class="form-control-static"><?php echo $row["diseaseSymptoms"]; ?> <?php echo $row["recordDate"]; ?></p> 
+                    </div>
+
+                    <p><a href="doctorHoempage.php" class="btn btn-primary">Back</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+22.patient_update.php
+
+<?php
+// Include config file
+require_once "patient_config.php";
+
+// Define variables and initialize with empty values 
+//patientName	patientAge	patientBD	patientCivilId	patientLocation	patientGender	patientPhone	patientDisease	diseaseSymptoms recordDate	
+
+
+// Define variables and initialize with empty values
+$patientName = $patientAge = $patientBD = $patientCivilId = $patientLocation = $patientGender = $patientPhone = $patientDisease = $diseaseSymptoms = $recordDate = "";
+$patientName_err = $patientAge_err = $patientBD_err = $patientCivilId_err = $patientLocation_err = $patientGender_err = $patientPhone_err = $patientDisease_err = $diseaseSymptoms_err = $recordDate_err = "";
+
+// Processing form data when form is submitted
+if(isset($_POST["id"]) && !empty($_POST["id"])){
+    // Get hidden input value
+    $id = $_POST["id"];
+
+    // Validate patientName
+    $input_patientName = trim($_POST["patientName"]);
+    if(empty($input_patientName)){
+        $patientName_err = "Please enter a patientName.";
+    } elseif(!filter_var($input_patientName, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+        $patientName_err = "Please enter a valid patientName.";
+    } else{
+        $patientName = $input_patientName;
+    }
+
+     // Validate patientAge
+     $input_patientAge = trim($_POST["patientAge"]);
+     if(empty($input_patientAge)){
+         $patientAge_err = "Please enter a patientAge.";
+     } elseif(!filter_var($input_patientAge, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+         $patientAge_err = "Please enter a valid patientAge.";
+     } else{
+         $patientAge = $input_patientAge;
+     }
+
+     // Validate patientBD
+     $input_patientBD = trim($_POST["patientBD"]);
+     if(empty($input_patientBD)){
+         $patientBD_err = "Please enter a valid patientBD.";
+     } elseif(!filter_var($input_patientBD, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+         $patientBD_err = "Please enter a valid patientBD.";
+     } else{
+         $patientBD = $input_patientBD;
+     }
+
+ // Validate patientCivilId
+    $input_patientCivilId = trim($_POST["patientCivilId"]);
+    if(empty($input_patientCivilId)){
+        $username_err = "Please enter patientCivilId.";
+    } elseif(!filter_var($input_patientCivilId, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+        $patientCivilId_err = "Please enter a valid patientCivilId.";
+    } else{
+        $patientCivilId = $input_patientCivilId;
+    }
+
+     // Validate patientLocation
+     $input_patientLocation = trim($_POST["patientLocation"]);
+     if(empty($input_patientLocation)){
+         $patientLocation_err = "Please enter patientLocation.";
+     } elseif(!filter_var($input_patientLocation, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+         $patientLocation_err = "Please enter a valid patientLocation.";
+     } else{
+         $patientLocation = $input_patientLocation;
+     }
+
+     // Validate patientGender
+     $input_patientGender = trim($_POST["patientGender"]);
+     if(empty($input_patientGender)){
+         $patientGender_err = "Please enter a valid patientGender.";
+     } elseif(!filter_var($input_patientGender, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+         $patientGender_err = "Please enter a valid patientGender.";
+     } else{
+         $patientGender = $input_patientGender;
+     }
+
+     // Validate patientPhone
+    $input_patientPhone = trim($_POST["patientPhone"]);
+    if(empty($input_patientPhone)){
+        $patientPhone_err = "Please enter an patientPhone.";
+    } elseif(!filter_var($input_patientPhone, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+        $patientPhone_err = "Please enter a valid patientPhone.";
+    } else{
+        $patientPhone = $input_patientPhone;
+    }
+
+     // Validate patientDisease
+     $input_patientDisease = trim($_POST["patientDisease"]);
+     if(empty($input_patientDisease)){
+         $patientDisease_err = "Please enter patientDisease.";
+     } elseif(!filter_var($input_patientDisease, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+         $patientDisease_err = "Please enter patientDisease.";
+     } else{
+         $patientDisease = $input_patientDisease;
+     }
+
+     // Validate diseaseSymptoms
+     $input_diseaseSymptoms = trim($_POST["diseaseSymptoms"]);
+     if(empty($input_diseaseSymptoms)){
+         $diseaseSymptoms_err = "Please enter diseaseSymptoms.";
+     } elseif(!filter_var($input_diseaseSymptoms, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+         $diseaseSymptoms_err = "Please enter diseaseSymptoms.";
+     } else{
+         $diseaseSymptoms = $input_diseaseSymptoms;
+     }
+
+ // Validate recordDate
+    $input_recordDate = trim($_POST["recordDate"]);
+    if(empty($input_recordDate)){
+        $recordDate_err = "Please enter recordDate.";
+    } elseif(!filter_var($input_recordDate, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+        $recordDate_err = "Please enter a valid recordDate.";
+    } else{
+        $recordDate = $input_recordDate;
+    }
+
+
+
+
+    //patientName_err = $patientAge_err = $patientBD_err = $patientCivilId_err = $patientLocation_err = $patientGender_err = $patientPhone_err = $patientDisease_err = $diseaseSymptoms_err = $recordDate_err = "";
+
+    // Check input errors before inserting in database
+    if(empty($patientName_err) && empty($patientAge_err) && empty($patientBD_err) && empty($patientCivilId_err) && empty($patientLocation_err) && empty($patientGender_err) && empty($patientPhone_err) && empty($patientDisease_err) && empty($diseaseSymptoms_err) && empty($recordDate_err)){
+        // Prepare an update statement
+        $sql = "UPDATE `patient_information` SET patientName=?, patientAge=?, patientBD=?, patientCivilId=?, patientLocation=?, patientGender=?, patientPhone=?, patientDisease=?, diseaseSymptoms=?, recordDate=? WHERE id=?";
+
+        if($stmt = mysqli_prepare($link, $sql)){
+            //$patientDisease = $diseaseSymptoms = $recordDate = "";
+
+            // Bind variables to the prepared statement as parameters
+            mysqli_stmt_bind_param($stmt, "sssi", $param_patientName, $param_patientAge, $param_patientBD, $param_patientCivilId, $param_patientLocation, $param_patientGender, $param_patientPhone, $param_patientDisease, $param_diseaseSymptoms, $param_recordDate, $param_id);
+
+            // Set parameters
+            $param_patientName = $patientName;
+            $param_patientAge = $patientAge;
+            $param_patientBD = $patientBD;
+            $param_patientCivilId = $patientCivilId;
+            $param_patientLocation = $patientLocation;
+            $param_patientGender = $patientGender;
+            $param_patientPhone = $patientPhone;
+            $param_patientDisease = $patientDisease;
+            $param_diseaseSymptoms = $diseaseSymptoms;
+            $param_recordDate = $recordDate;
+            $param_id = $id;
+
+            // Attempt to execute the prepared statement
+            if(mysqli_stmt_execute($stmt)){
+                // Records updated successfully. Redirect to admin_homepage page
+                header("location: doctorHoempage.php");
+                exit();
+            } else{
+                echo "Something went wrong. Please try again later.";
+            }
+        }
+
+        // Close statement
+        mysqli_stmt_close($stmt);
+    }
+
+    // Close connection
+    mysqli_close($link);
+} else{
+    // Check existence of id parameter before processing further
+    if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
+        // Get URL parameter
+        $id =  trim($_GET["id"]);
+
+        // Prepare a select statement
+        $sql = "SELECT * FROM `patient_information` WHERE id = ?";
+        if($stmt = mysqli_prepare($link, $sql)){
+            // Bind variables to the prepared statement as parameters
+            mysqli_stmt_bind_param($stmt, "i", $param_id);
+
+            // Set parameters
+            $param_id = $id;
+
+            // Attempt to execute the prepared statement
+            if(mysqli_stmt_execute($stmt)){
+                $result = mysqli_stmt_get_result($stmt);
+
+                if(mysqli_num_rows($result) == 1){
+                    /* Fetch result row as an associative array. Since the result set contains only one row, we don't need to use while loop */
+                    $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+
+                    // Retrieve individual field value
+                    $patientName=$row['patientName'];
+                    $patientAge=$row['patientAge'];
+                    $patientBD=$row['patientBD'];
+                    $patientCivilId=$row['patientCivilId'];
+                    $patientLocation=$row['patientLocation'];
+                    $patientGender=$row['patientGender'];
+                    $patientPhone=$row['patientPhone'];
+                    $patientDisease=$row['patientDisease'];
+                    $diseaseSymptoms=$row['diseaseSymptoms'];
+                    $recordDate=$row['recordDate'];
+           
+                } else{
+                    // URL doesn't contain valid id. Redirect to error page
+                    header("location: patient_error.php");
+                    exit();
+                }
+
+            } else{
+                echo "Oops! Something went wrong. Please try again later.";
+            }
+        }
+
+        // Close statement
+        mysqli_stmt_close($stmt);
+
+        // Close connection
+        mysqli_close($link);
+    }  else{
+        // URL doesn't contain id parameter. Redirect to error page
+        header("location: patient_error.php");
+        exit();
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Patient Record</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+    <style type="text/css">
+        .wrapper{
+            width: 500px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="page-header">
+                        <h2>Update Patient Record</h2>
+                    </div>
+                    <p>Please edit the input values .</p>
+                    <form action="<?php echo htmlspecialchars(basename($_SERVER['REQUEST_URI'])); ?>" method="post">
+                      <!--patientName-->	
+
+                            <label>patientName</label>
+                            <input type="text" name="patientName" class="form-control" value="<?php echo $patientName; ?>">
+                       <!--patientAge-->
+                            <label>patientAge</label>
+                            <input type="number" name="patientAge" class="form-control" value="<?php echo $patientAge; ?>">
+                      <!--patientBD-->
+                            <label>patientBD</label>
+                            <input type="date" name="patientBD" class="form-control" value="<?php echo $patientBD; ?>">
+                    <!--patientCivilId-->
+                             <label>patientCivilId</label>
+                            <input type="number" name="patientCivilId" class="form-control" value="<?php echo $patientCivilId; ?>">
+                      <!--patientLocation-->
+                            <label>patientLocation</label>
+                            <input type="text" name="patientLocation" class="form-control" value="<?php echo $patientLocation; ?>">
+                       <!--patientGender-->
+                            <label>patientGender</label>
+                            <input type="text" name="patientGender" class="form-control" value="<?php echo $patientGender; ?>">
+
+                        <!--patientPhone-->
+                        <label>patientPhone</label>
+                        <input type="number" name="patientPhone" class="form-control" value="<?php echo $patientPhone; ?>">
+
+                       <!--patientDisease-->
+                            <label>patientDisease</label>
+                            <input type="text" name="patientDisease" class="form-control" value="<?php echo $patientDisease; ?>">
+                      
+                            <!--diseaseSymptoms-->
+                            <label>diseaseSymptoms</label>
+                            <input type="text" name="diseaseSymptoms" class="form-control" value="<?php echo $diseaseSymptoms; ?>">
+                      
+                        <!--recordDate--> 			
+                            <label>recordDate</label>
+                            <input type="date" name="recordDate" class="form-control" value="<?php echo $recordDate; ?>">
+                      
+                        <input type="hidden" name="id" value="<?php echo $id; ?>"/>
+                        <input name="add" type="submit" class="btn btn-primary" value="Submit">
+                        <a href="doctorHoempage.php" class="btn btn-default">BACK</a>
+                        <a href="doctorHoempage.php" class="btn btn-default">CANCEL</a>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+23.patientconnector.php
+
+<?php
+
+// connect to the database
+$con = mysqli_connect('localhost', 'root', '','healthCareSystem');
+
+$email    = "";
+$pass    = "";
+$errors = array();
+									
+//if user signup button
+if(isset($_POST['add'])){ 			
+    $patientName = mysqli_real_escape_string($con, $_POST['patientName']);
+    $patientAge = mysqli_real_escape_string($con, $_POST['patientAge']);
+    $patientBD = mysqli_real_escape_string($con, $_POST['patientBD']);
+    $patientCivilId = mysqli_real_escape_string($con, $_POST['patientCivilId']);
+    $patientLocation = mysqli_real_escape_string($con, $_POST['patientLocation']);
+    $patientGender = mysqli_real_escape_string($con, $_POST['patientGender']);
+    $patientPhone = mysqli_real_escape_string($con, $_POST['patientPhone']);
+    $patientDisease = mysqli_real_escape_string($con, $_POST['patientDisease']);
+    $diseaseSymptoms = mysqli_real_escape_string($con, $_POST['diseaseSymptoms']);
+    $recordDate = mysqli_real_escape_string($con, $_POST['recordDate']);
+    
+    									
+    $insert_data = "INSERT INTO `patient_information` ( patientName, patientAge, patientBD, patientCivilId, patientLocation, patientGender, patientPhone, patientDisease, diseaseSymptoms, recordDate)
+    values( '$patientName', '$patientAge', '$patientBD', '$patientCivilId', '$patientLocation', '$patientGender', '$patientPhone', '$patientDisease', '$diseaseSymptoms', '$recordDate')";     
+     $data_check = mysqli_query($con, $insert_data);
+     if($con->query($insert_data)){
+        $_SESSION['success'] = 'User added successfully';
+    }
+
+}
+  
+
+
+
+?>
+
+
+24.script.js
+
+const form = document.querySelector("form");
+eField = form.querySelector(".email"),
+  eInput = eField.querySelector("input"),
+  pField = form.querySelector(".password"),
+  pInput = pField.querySelector("input");
+
+form.onsubmit = (e) => {
+  e.preventDefault(); //preventing from form submitting
+  //if email and password is blank then add shake class in it else call specified function
+  (eInput.value == "") ? eField.classList.add("shake", "error") : checkEmail();
+  (pInput.value == "") ? pField.classList.add("shake", "error") : checkPass();
+
+  setTimeout(() => { //remove shake class after 500ms
+    eField.classList.remove("shake");
+    pField.classList.remove("shake");
+  }, 500);
+
+  eInput.onkeyup = () => { checkEmail(); } //calling checkEmail function on email input keyup
+  pInput.onkeyup = () => { checkPass(); } //calling checkPassword function on pass input keyup
+
+  function checkEmail() { //checkEmail function
+    let pattern = /^[^]+@[^]+\.[a-z]{2,3}$/; //pattern for validate email
+    if (!eInput.value.match(pattern)) { //if pattern not matched then add error and remove valid class
+      eField.classList.add("error");
+      eField.classList.remove("valid");
+      let errorTxt = eField.querySelector(".error-txt");
+      //if email value is not empty then show please enter valid email else show Email can't be blank
+      (eInput.value != "") ? errorTxt.innerText = "Enter a valid email address" : errorTxt.innerText = "Email can't be blank";
+    } else { //if pattern matched then remove error and add valid class
+      eField.classList.remove("error");
+      eField.classList.add("valid");
+    }
+  }
+
+  function checkPass() { //checkPass function
+    if (pInput.value == "") { //if pass is empty then add error and remove valid class
+      pField.classList.add("error");
+      pField.classList.remove("valid");
+    } else { //if pass is empty then remove error and add valid class
+      pField.classList.remove("error");
+      pField.classList.add("valid");
+    }
+  }
+
+  //if eField and pField doesn't contains error class that mean user filled details properly
+  if (!eField.classList.contains("error") && !pField.classList.contains("error")) {
+    window.location.href = form.getAttribute("action"); //redirecting user to the specified url which is inside action attribute of form tag
+  }
+}
+
+25.style.css
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Roboto", sans-serif;
+  }
+  body{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #D17117;
+  }
+  ::selection{
+    color: #fff;
+    background: #D17117;
+  }
+  .wrapper{
+    width: 380px;
+    padding: 40px 30px 50px 30px;
+    background: #fff;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 10px 10px 15px rgba(0,0,0,0.1);
+  }
+  .wrapper header{
+    font-size: 35px;
+    font-weight: 600;
+  }
+  .wrapper form{
+    margin: 40px 0;
+  }
+  form .field{
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  form .field.shake{
+    animation: shake 0.3s ease-in-out;
+  }
+  @keyframes shake {
+    0%, 100%{
+      margin-left: 0px;
+    }
+    20%, 80%{
+      margin-left: -12px;
+    }
+    40%, 60%{
+      margin-left: 12px;
+    }
+  }
+  form .field .input-area{
+    height: 50px;
+    width: 100%;
+    position: relative;
+  }
+  form input{
+    width: 100%;
+    height: 100%;
+    outline: none;
+    padding: 0 45px;
+    font-size: 18px;
+    background: none;
+    caret-color: #D17117;
+    border-radius: 5px;
+    border: 1px solid #bfbfbf;
+    border-bottom-width: 2px;
+    transition: all 0.2s ease;
+  }
+  form .field input:focus,
+  form .field.valid input{
+    border-color: #D17117;
+  }
+  form .field.shake input,
+  form .field.error input{
+    border-color: #dc3545;
+  }
+  .field .input-area i{
+    position: absolute;
+    top: 50%;
+    font-size: 18px;
+    pointer-events: none;
+    transform: translateY(-50%);
+  }
+  .input-area .icon{
+    left: 15px;
+    color: #bfbfbf;
+    transition: color 0.2s ease;
+  }
+  .input-area .error-icon{
+    right: 15px;
+    color: #dc3545;
+  }
+  form input:focus ~ .icon,
+  form .field.valid .icon{
+    color: #D17117;
+  }
+  form .field.shake input:focus ~ .icon,
+  form .field.error input:focus ~ .icon{
+    color: #bfbfbf;
+  }
+  form input::placeholder{
+    color: #bfbfbf;
+    font-size: 17px;
+  }
+  form .field .error-txt{
+    color: #dc3545;
+    text-align: left;
+    margin-top: 5px;
+  }
+  form .field .error{
+    display: none;
+  }
+  form .field.shake .error,
+  form .field.error .error{
+    display: block;
+  }
+  form .pass-txt{
+    text-align: left;
+    margin-top: -10px;
+  }
+  .wrapper a{
+    color: #D17117;
+    text-decoration: none;
+  }
+  .wrapper a:hover{
+    text-decoration: underline;
+  }
+  form input[type="submit"]{
+    height: 50px;
+    margin-top: 30px;
+    color: #fff;
+    padding: 0;
+    border: none;
+    background: #D17117;
+    cursor: pointer;
+    border-bottom: 2px solid rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+  }
+  form input[type="submit"]:hover{
+    background: #ad5605;
+  }
